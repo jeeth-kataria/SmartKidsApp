@@ -1,0 +1,2 @@
+ID,Name,Department,Registration_Date,Face_Encoding_Path,Status,Email
+TEST001,Test Teacher,Testing,2025-06-20,face_encodings/TEST001.pkl,Active,

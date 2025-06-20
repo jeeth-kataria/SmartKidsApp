@@ -1,0 +1,31 @@
+# Development files
+*.pyc
+__pycache__/
+.pytest_cache/
+.coverage
+.env
+.venv/
+venv/
+
+# Data files (will be created at runtime)
+data/backups/
+temp_images/
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation
+README.md
+docs/

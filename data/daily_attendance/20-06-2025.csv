@@ -1,0 +1,2 @@
+Date,Teacher_ID,Name,Time_In,Status,Is_Holiday,Holiday_Name,Recognition_Confidence
+2025-06-20,TEST001,Test Teacher,11:12:09,Present,False,,0.85

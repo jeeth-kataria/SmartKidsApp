@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Kids Attendance System - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header h2 {
+            color: #764ba2;
+            font-size: 1.5rem;
+            font-weight: 300;
+        }
+        
+        .demo-notice {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .demo-notice h3 {
+            color: #2e7d32;
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .nav-tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .nav-tab.active:hover {
+            background: #5a6fd8;
+        }
+        
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .status-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .status-card {
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-card.success {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+        }
+        
+        .status-card.warning {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+        
+        .status-card.info {
+            background: linear-gradient(135deg, #2196f3, #1976d2);
+            color: white;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .metric {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .metric-label {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn-success {
+            background: #4caf50;
+        }
+        
+        .btn-success:hover {
+            background: #45a049;
+        }
+        
+        .teacher-list {
+            margin-top: 2rem;
+        }
+        
+        .teacher-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .attendance-item {
+            background: #e8f5e8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border-left: 4px solid #4caf50;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .feature-list li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        
+        .download-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h2 {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Smart Kids Attendance System</h1>
+            <h2>Live Demo - Face Recognition Portal</h2>
+        </div>
+        
+        <div class="demo-notice">
+            <h3>🚀 Live Demo Version</h3>
+            <p>This is a simplified demo running on Vercel. Download the full version for face recognition, camera integration, and advanced features!</p>
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showTab('teachers')">👥 Teachers</button>
+            <button class="nav-tab" onclick="showTab('attendance')">📝 Attendance</button>
+            <button class="nav-tab" onclick="showTab('about')">🚀 Full Version</button>
+        </div>
+        
+        <div id="dashboard" class="tab-content active">
+            <h2>📊 Dashboard</h2>
+            
+            <div class="status-cards">
+                <div class="status-card warning">
+                    <h3>⏰ System Status</h3>
+                    <p id="system-status">Checking...</p>
+                </div>
+                <div class="status-card info">
+                    <h3>🕐 Current Time</h3>
+                    <p id="current-time">Loading...</p>
+                </div>
+                <div class="status-card success">
+                    <h3>📅 Day Status</h3>
+                    <p id="day-status">Checking...</p>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value" id="total-teachers">0</div>
+                    <div class="metric-label">Total Teachers</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="today-attendance">0</div>
+                    <div class="metric-label">Today's Attendance</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="total-records">0</div>
+                    <div class="metric-label">Total Records</div>
+                </div>
+            </div>
+            
+            <div style="background: #e3f2fd; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #2196f3;">
+                <h3>⏰ Attendance Window</h3>
+                <p><strong>Active Time:</strong> 9:00 AM - 9:20 AM daily (20 minutes)</p>
+                <p id="window-status">Checking window status...</p>
+            </div>
+        </div>
+        
+        <div id="teachers" class="tab-content">
+            <h2>👥 Teacher Management</h2>
+            
+            <div style="background: #fff3e0; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+                <h3>➕ Add New Teacher</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div class="form-group">
+                        <label>Teacher ID*</label>
+                        <input type="text" id="teacher-id" placeholder="T001">
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name*</label>
+                        <input type="text" id="teacher-name" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Department*</label>
+                        <select id="teacher-department">
+                            <option value="">Select Department</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Science">Science</option>
+                            <option value="English">English</option>
+                            <option value="Social Studies">Social Studies</option>
+                            <option value="Arts">Arts</option>
+                            <option value="Physical Education">Physical Education</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="teacher-email" placeholder="teacher@school.com">
+                    </div>
+                </div>
+                <p style="margin: 1rem 0; color: #666;">📸 <strong>Note:</strong> In the full version, you would upload 2-5 photos here for face recognition training.</p>
+                <button class="btn btn-success" onclick="addTeacher()">Add Teacher</button>
+            </div>
+            
+            <h3>👀 Current Teachers</h3>
+            <div id="teacher-list" class="teacher-list">
+                <p style="color: #666; text-align: center; padding: 2rem;">No teachers added yet. Add some teachers to get started!</p>
+            </div>
+        </div>
+        
+        <div id="attendance" class="tab-content">
+            <h2>📝 Attendance Management</h2>
+            
+            <div style="background: #f3e5f5; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem;">
+                <h3>✋ Manual Attendance (Demo)</h3>
+                <div style="display: flex; gap: 1rem; align-items: end; margin-top: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Select Teacher</label>
+                        <select id="attendance-teacher">
+                            <option value="">No teachers available</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success" onclick="markAttendance()">Mark Present</button>
+                </div>
+            </div>
+            
+            <h3>📋 Today's Attendance</h3>
+            <div id="today-attendance-list">
+                <p style="color: #666; text-align: center; padding: 2rem;">No attendance records for today</p>
+            </div>
+            
+            <h3>📊 All Attendance Records</h3>
+            <div id="all-attendance-list">
+                <p style="color: #666; text-align: center; padding: 2rem;">No attendance records yet</p>
+            </div>
+        </div>
+        
+        <div id="about" class="tab-content">
+            <h2>🚀 About the Full Version</h2>
+            
+            <div style="background: #e8f5e8; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; text-align: center;">
+                <h3>This is a live demo of the Smart Kids Attendance System!</h3>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                <div>
+                    <h3>🎯 Demo Features</h3>
+                    <ul class="feature-list">
+                        <li>Teacher management system</li>
+                        <li>Manual attendance marking</li>
+                        <li>Time window management</li>
+                        <li>Real-time dashboard</li>
+                        <li>Session-based storage</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3>🔥 Full Version Features</h3>
+                    <ul class="feature-list">
+                        <li>Real-time face recognition</li>
+                        <li>Camera integration</li>
+                        <li>Advanced analytics</li>
+                        <li>Google Calendar integration</li>
+                        <li>Excel database</li>
+                        <li>Mobile responsive</li>
+                        <li>Configurable settings</li>
+                        <li>Export capabilities</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="download-section">
+                <h3>💻 Get the Full Version</h3>
+                <p>Download and run locally for complete functionality</p>
+                
+                <div class="code-block">
+# Clone the repository<br>
+git clone &lt;repository-url&gt;<br>
+cd Smart_Kids_Attendance<br><br>
+# Quick start<br>
+python start.py
+                </div>
+                
+                <p style="margin-top: 1rem;">Perfect for schools with 4-50 teachers • Daily attendance automation • Face recognition accuracy</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let teachers = JSON.parse(localStorage.getItem('teachers') || '[]');
+        let attendance = JSON.parse(localStorage.getItem('attendance') || '[]');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            updateTeacherList();
+            updateAttendanceList();
+            updateTime();
+            setInterval(updateTime, 1000);
+        });
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const dateString = now.toLocaleDateString();
+            
+            document.getElementById('current-time').innerHTML = `${timeString}<br><small>${dateString}</small>`;
+            
+            // Check attendance window (9:00-9:20 AM)
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+            const inWindow = hour === 9 && minute >= 0 && minute <= 20;
+            
+            if (isWeekend) {
+                document.getElementById('system-status').textContent = 'Weekend - Inactive';
+                document.getElementById('day-status').textContent = 'Weekend';
+                document.getElementById('window-status').textContent = '🟡 WEEKEND - System inactive';
+            } else if (inWindow) {
+                document.getElementById('system-status').textContent = 'Active - In Window';
+                document.getElementById('day-status').textContent = 'Working Day';
+                document.getElementById('window-status').textContent = '🟢 ACTIVE NOW - Attendance can be marked!';
+            } else {
+                document.getElementById('system-status').textContent = 'Inactive - Outside Window';
+                document.getElementById('day-status').textContent = 'Working Day';
+                if (hour < 9 || (hour === 9 && minute < 0)) {
+                    const timeUntil = new Date();
+                    timeUntil.setHours(9, 0, 0, 0);
+                    const diff = timeUntil - now;
+                    const hours = Math.floor(diff / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    document.getElementById('window-status').textContent = `🔵 INACTIVE - Next window in ${hours}h ${minutes}m`;
+                } else {
+                    document.getElementById('window-status').textContent = '🔵 INACTIVE - Window closed for today';
+                }
+            }
+        }
+
+        function updateDashboard() {
+            const today = new Date().toLocaleDateString();
+            const todayAttendance = attendance.filter(a => a.date === today);
+            
+            document.getElementById('total-teachers').textContent = teachers.length;
+            document.getElementById('today-attendance').textContent = todayAttendance.length;
+            document.getElementById('total-records').textContent = attendance.length;
+        }
+
+        function addTeacher() {
+            const id = document.getElementById('teacher-id').value;
+            const name = document.getElementById('teacher-name').value;
+            const department = document.getElementById('teacher-department').value;
+            const email = document.getElementById('teacher-email').value;
+
+            if (!id || !name || !department) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            if (teachers.find(t => t.id === id)) {
+                alert('Teacher ID already exists');
+                return;
+            }
+
+            const teacher = {
+                id,
+                name,
+                department,
+                email,
+                registrationDate: new Date().toLocaleDateString()
+            };
+
+            teachers.push(teacher);
+            localStorage.setItem('teachers', JSON.stringify(teachers));
+
+            // Clear form
+            document.getElementById('teacher-id').value = '';
+            document.getElementById('teacher-name').value = '';
+            document.getElementById('teacher-department').value = '';
+            document.getElementById('teacher-email').value = '';
+
+            updateTeacherList();
+            updateDashboard();
+            alert(`✅ Teacher ${name} added successfully!`);
+        }
+
+        function updateTeacherList() {
+            const list = document.getElementById('teacher-list');
+            const select = document.getElementById('attendance-teacher');
+            
+            if (teachers.length === 0) {
+                list.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No teachers added yet. Add some teachers to get started!</p>';
+                select.innerHTML = '<option value="">No teachers available</option>';
+                return;
+            }
+
+            list.innerHTML = teachers.map(teacher => `
+                <div class="teacher-item">
+                    <h4>${teacher.id} - ${teacher.name}</h4>
+                    <p><strong>Department:</strong> ${teacher.department}</p>
+                    <p><strong>Email:</strong> ${teacher.email}</p>
+                    <p><strong>Registered:</strong> ${teacher.registrationDate}</p>
+                </div>
+            `).join('');
+
+            select.innerHTML = '<option value="">Select Teacher</option>' + 
+                teachers.map(teacher => `<option value="${teacher.id}">${teacher.id} - ${teacher.name}</option>`).join('');
+        }
+
+        function markAttendance() {
+            const teacherId = document.getElementById('attendance-teacher').value;
+            if (!teacherId) {
+                alert('Please select a teacher');
+                return;
+            }
+
+            const teacher = teachers.find(t => t.id === teacherId);
+            const today = new Date().toLocaleDateString();
+            const time = new Date().toLocaleTimeString();
+
+            // Check if already marked today
+            if (attendance.find(a => a.teacherId === teacherId && a.date === today)) {
+                alert('Attendance already marked for today!');
+                return;
+            }
+
+            const record = {
+                teacherId,
+                teacherName: teacher.name,
+                date: today,
+                time,
+                status: 'Present'
+            };
+
+            attendance.push(record);
+            localStorage.setItem('attendance', JSON.stringify(attendance));
+
+            updateAttendanceList();
+            updateDashboard();
+            alert(`✅ Attendance marked for ${teacher.name}`);
+        }
+
+        function updateAttendanceList() {
+            const today = new Date().toLocaleDateString();
+            const todayAttendance = attendance.filter(a => a.date === today);
+            
+            const todayList = document.getElementById('today-attendance-list');
+            const allList = document.getElementById('all-attendance-list');
+
+            if (todayAttendance.length === 0) {
+                todayList.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No attendance records for today</p>';
+            } else {
+                todayList.innerHTML = todayAttendance.map(record => `
+                    <div class="attendance-item">
+                        ✅ <strong>${record.teacherName}</strong> - ${record.time} (${record.status})
+                    </div>
+                `).join('');
+            }
+
+            if (attendance.length === 0) {
+                allList.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">No attendance records yet</p>';
+            } else {
+                // Group by date and show last 10 days
+                const groupedByDate = {};
+                attendance.forEach(record => {
+                    if (!groupedByDate[record.date]) {
+                        groupedByDate[record.date] = [];
+                    }
+                    groupedByDate[record.date].push(record);
+                });
+
+                const dates = Object.keys(groupedByDate).sort().reverse().slice(0, 10);
+                
+                allList.innerHTML = dates.map(date => `
+                    <div style="margin-bottom: 1rem;">
+                        <h4>${date} (${groupedByDate[date].length} records)</h4>
+                        ${groupedByDate[date].map(record => `
+                            <div style="margin-left: 1rem; padding: 0.5rem; background: #f8f9fa; border-radius: 5px; margin-bottom: 0.5rem;">
+                                • <strong>${record.teacherName}</strong> (${record.teacherId}) - ${record.time}
+                            </div>
+                        `).join('')}
+                    </div>
+                `).join('');
+            }
+        }
+    </script>
+</body>
+</html>

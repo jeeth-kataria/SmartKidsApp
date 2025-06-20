@@ -1,0 +1,26 @@
+{
+  "system_name": "Smart Kids Attendance System",
+  "school_name": "Smart Kids School",
+  "version": "1.0.0",
+  "environment": "production",
+  "features": {
+    "face_recognition": true,
+    "google_calendar": true,
+    "manual_holidays": true,
+    "backup_system": true,
+    "analytics": true
+  },
+  "limits": {
+    "max_teachers": 50,
+    "max_photos_per_teacher": 5,
+    "confidence_threshold_min": 0.3,
+    "confidence_threshold_max": 0.9,
+    "attendance_window_min_minutes": 5,
+    "attendance_window_max_minutes": 60
+  },
+  "defaults": {
+    "confidence_threshold": 0.6,
+    "backup_retention_days": 30,
+    "cache_expiry_days": 7
+  }
+}
