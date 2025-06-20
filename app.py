@@ -86,6 +86,18 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Utility function to ensure single date/time
+
+def ensure_single_date(val, fallback):
+    if isinstance(val, (tuple, list)):
+        return val[0] if val else fallback
+    return val
+
+def ensure_single_time(val, fallback):
+    if isinstance(val, (tuple, list)):
+        return val[0] if val else fallback
+    return val
+
 def main():
     # Header
     st.markdown("""
@@ -457,8 +469,14 @@ def show_reports():
         col1, col2 = st.columns(2)
         with col1:
             start_date = st.date_input("Start Date", value=date.today() - timedelta(days=30))
+            start_date = ensure_single_date(start_date, date.today() - timedelta(days=30))
+            if start_date is None:
+                start_date = date.today() - timedelta(days=30)
         with col2:
             end_date = st.date_input("End Date", value=date.today())
+            end_date = ensure_single_date(end_date, date.today())
+            if end_date is None:
+                end_date = date.today()
         
         if start_date > end_date:
             st.error("Start date must be before end date")
@@ -612,8 +630,14 @@ def show_reports():
         col1, col2 = st.columns(2)
         with col1:
             export_start = st.date_input("Export Start Date", value=date.today() - timedelta(days=30), key="export_start")
+            export_start = ensure_single_date(export_start, date.today() - timedelta(days=30))
+            if export_start is None:
+                export_start = date.today() - timedelta(days=30)
         with col2:
             export_end = st.date_input("Export End Date", value=date.today(), key="export_end")
+            export_end = ensure_single_date(export_end, date.today())
+            if export_end is None:
+                export_end = date.today()
         
         if export_start > export_end:
             st.error("Start date must be before end date")
@@ -636,7 +660,7 @@ def show_reports():
             if st.button("📊 Download Excel Report"):
                 # Create Excel file
                 output = io.BytesIO()
-                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:  # type: ignore
                     export_df.to_excel(writer, sheet_name='Attendance', index=False)
                     
                     # Add summary sheets
@@ -763,6 +787,9 @@ def show_settings():
                 value=current_start,
                 help="When teachers can start marking attendance"
             )
+            new_start_time = ensure_single_time(new_start_time, current_start)
+            if new_start_time is None:
+                new_start_time = current_start
         
         with col2:
             new_end_time = st.time_input(
@@ -770,6 +797,9 @@ def show_settings():
                 value=current_end,
                 help="When attendance window closes"
             )
+            new_end_time = ensure_single_time(new_end_time, current_end)
+            if new_end_time is None:
+                new_end_time = current_end
         
         with col3:
             st.write("")  # Spacer
@@ -874,6 +904,7 @@ def show_settings():
         
         with col1:
             holiday_date = st.date_input("Holiday Date", min_value=date.today())
+            holiday_date = ensure_single_date(holiday_date, date.today())
         
         with col2:
             holiday_name = st.text_input("Holiday Name", placeholder="e.g., Diwali")
